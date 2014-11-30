@@ -38,10 +38,13 @@ This'll help you get up and running, whether you're a service that can accept co
 
 = 1.1.2 =
 * some wordpress 3.1 fixes
+
 = 1.1.1 =
 * HTML Meta-Link
+
 = 1.1 =
 * Cosmetics
+
 = 1.0 =
 * Plugin administration
 * Icon support
