@@ -1,0 +1,24 @@
+{
+  "name": "OExchange",
+  "version": "1.6.1",
+  "description": "OExchange support for the \"Press This\" bookmarklet",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pfefferle/wordpress-oexchange.git"
+  },
+  "keywords": [
+    "wordpress",
+    "oexchange",
+    "plugin"
+  ],
+  "author": "Matthias Pfefferle",
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/pfefferle/wordpress-oexchange/issues"
+  },
+  "homepage": "https://github.com/pfefferle/wordpress-oexchange",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-wp-readme-to-markdown": "^0.8.0"
+  }
+}
