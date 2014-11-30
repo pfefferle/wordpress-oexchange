@@ -3,28 +3,22 @@
 Plugin Name: OExchange
 Plugin URI: http://wordpress.org/extend/plugins/oexchange/
 Description: Adds OExchange support to WordPress' "Press This" bookmarklet
-Version: 1.6.0
+Version: 1.6.1
 Author: Matthias Pfefferle
 Author URI: http://notizblog.org/
 */
 
 // Pre-2.6 compatibility
-if ( ! defined( 'WP_CONTENT_URL' ) )
-    define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
-if ( ! defined( 'WP_CONTENT_DIR' ) )
-    define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
-if ( ! defined( 'WP_PLUGIN_URL' ) )
-    define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
-if ( ! defined( 'WP_PLUGIN_DIR' ) )
-    define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
+if (!defined('WP_CONTENT_URL'))
+  define('WP_CONTENT_URL', get_option('siteurl') . '/wp-content');
+if (!defined('WP_CONTENT_DIR'))
+  define('WP_CONTENT_DIR', ABSPATH . 'wp-content');
+if (!defined('WP_PLUGIN_URL'))
+  define('WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins');
+if (!defined('WP_PLUGIN_DIR'))
+  define('WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins');
 
-add_action('parse_request', array('OExchangePlugin', 'parse_request'));
-add_filter('query_vars', array('OExchangePlugin', 'query_vars'));
-add_filter('host_meta', array('OExchangePlugin', 'host_meta_link'));
-add_filter('webfinger', array('OExchangePlugin', 'webfinger_link'));
 add_action('init', array('OExchangePlugin', 'init'));
-add_action('admin_menu', array('OExchangePlugin', 'add_menu_item'));
-add_action('wp_head', array('OExchangePlugin', 'html_meta_link'), 5);
 
 /**
  * OExchange class
@@ -33,6 +27,19 @@ add_action('wp_head', array('OExchangePlugin', 'html_meta_link'), 5);
  * @link http://www.oexchange.org/spec/ OExchange Spec
  */
 class OExchangePlugin {
+  /**
+   * init plugin
+   */
+  public static function init() {
+    add_action('parse_request', array('OExchangePlugin', 'parse_request'));
+    add_filter('query_vars', array('OExchangePlugin', 'query_vars'));
+    add_filter('host_meta', array('OExchangePlugin', 'host_meta_link'));
+    add_filter('webfinger', array('OExchangePlugin', 'webfinger_link'));
+    add_action('load-press-this.php', array('OExchangePlugin', 'admin_init'));
+    add_action('admin_menu', array('OExchangePlugin', 'add_menu_item'));
+    add_action('wp_head', array('OExchangePlugin', 'html_meta_link'), 5);
+  }
+
   /**
    * add 'oexchange' as a valid query var.
    *
@@ -49,22 +56,18 @@ class OExchangePlugin {
    * Runs after WordPress has finished loading but
    * before any headers are sent. Useful for intercepting $_GET or $_POST triggers.
    */
-  public static function init() {
-    if (!is_press_this()) {
-      return;
-    }
-
+  public static function admin_init() {
     // oexchange to wordpress mapping
-    if (isset( $_GET['url'] ))
+    if (isset($_GET['url']))
       $_GET['u'] = $_GET['url'];
 
-    if (isset( $_GET['title'] ))
+    if (isset($_GET['title']))
       $_GET['t'] = $_GET['title'];
 
-    if (isset( $_GET['description'] ))
+    if (isset($_GET['description']))
       $_GET['s'] = $_GET['description'];
 
-    if (isset( $_GET['ctype'] )) {
+    if (isset($_GET['ctype'])) {
       if ($_GET['ctype'] == "image") {
         $_GET['i'] = $_GET['imageurl'];
       }
@@ -77,7 +80,7 @@ class OExchangePlugin {
   public static function parse_request() {
     global $wp_query, $wp;
 
-    if( array_key_exists('oexchange', $wp->query_vars) ) {
+    if (array_key_exists('oexchange', $wp->query_vars)) {
       if ($wp->query_vars['oexchange'] == 'xrd') {
         header('Content-Type: application/xrd+xml; charset=' . get_option('blog_charset'), true);
         echo OExchangePlugin::create_xrd();
@@ -169,8 +172,6 @@ class OExchangePlugin {
   public static function show_settings() {
 ?>
   <div class="wrap">
-    <img src="<?php echo WP_PLUGIN_URL ?>/oexchange/logo_32x32.png" alt="OSstatus for WordPress" class="icon32" />
-
     <h2>OExchange</h2>
 
     <p>OExchange is an open protocol for sharing any URL with any service on the web. -- <a href="http://www.oexchange.org/">oexchange.org</a></p>
@@ -183,7 +184,7 @@ class OExchangePlugin {
         <tr valign="top">
         <th scope="row">OExchange URL</th>
         <td class="defaultavatarpicker"><fieldset><legend class="screen-reader-text"><span>Default Avatar</span></legend>
-          Your Blogs discovery-url: <a href="<?php echo get_bloginfo( 'url' ).'/?oexchange=xrd'; ?>" target="_blank"><?php echo site_url("/?oexchange=xrd"); ?></a>
+          Your Blogs discovery-url: <a href="<?php echo get_bloginfo('url').'/?oexchange=xrd'; ?>" target="_blank"><?php echo site_url("/?oexchange=xrd"); ?></a>
         </fieldset>
         </td>
         </tr>
@@ -215,29 +216,8 @@ class OExchangePlugin {
 
     <p>This is how the discovery file looks like:</p>
 
-    <pre><code><?php echo htmlentities(OExchangePlugin::create_xrd()); ?></code></pre>
+    <pre><?php echo htmlentities(OExchangePlugin::create_xrd()); ?></pre>
   </div>
 <?php
   }
 }
-
-if ( !function_exists( 'is_press_this' ) ):
-/**
-* Convert base-10 number to sexagesimal.
-*/
-function is_press_this() {
-  $bookmarklet_url = admin_url('press-this.php');
-
-  $url = 'http'.(isset($_SERVER["HTTPS"]) ? $_SERVER["HTTPS"] == 'off' ? '' : 's' : '').
-                  '://'.
-                  $_SERVER['HTTP_HOST'].
-                  $_SERVER['REQUEST_URI'];
-
-  if (stristr($url, $bookmarklet_url) === false) {
-    return false;
-  }
-
-  return true;
-}
-endif;
-?>
