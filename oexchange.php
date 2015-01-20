@@ -97,7 +97,7 @@ class OExchangePlugin {
    */
   public static function create_xrd() {
     $xrd = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-    $xrd .= '<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">'."\n";
+    $xrd .= '<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0'.do_action("oexchange_ns").'">'."\n";
     $xrd .= '  <Subject>'.site_url("/").'</Subject>'."\n";
     $xrd .= '  <Property type="http://www.oexchange.org/spec/0.8/prop/vendor">'.get_bloginfo('name').'</Property>'."\n";
     $xrd .= '  <Property type="http://www.oexchange.org/spec/0.8/prop/title">'.get_bloginfo('description').'</Property>'."\n";
@@ -106,6 +106,7 @@ class OExchangePlugin {
     $xrd .= '  <Link rel= "icon" href="'.OExchangePlugin::get_icon_url(16).'" />'."\n";
     $xrd .= '  <Link rel= "icon32" href="'.OExchangePlugin::get_icon_url(32).'" />'."\n";
     $xrd .= '  <Link rel= "http://www.oexchange.org/spec/0.8/rel/offer" href="'.admin_url('press-this.php').'" type="text/html"/>'."\n";
+    $xrd .= do_action("oexchange_xrd");
     $xrd .= '</XRD>';
 
     return $xrd;
@@ -120,6 +121,7 @@ class OExchangePlugin {
     $array["links"][] = array("rel" => "http://oexchange.org/spec/0.8/rel/resident-target",
                               "href" => site_url("/?oexchange=xrd"),
                               "type" => "application/xrd+xml");
+
     return $array;
   }
 
@@ -132,6 +134,7 @@ class OExchangePlugin {
     $array["links"][] = array("rel" => "http://oexchange.org/spec/0.8/rel/user-target",
                               "href" => site_url("/?oexchange=xrd"),
                               "type" => "application/xrd+xml");
+
     return $array;
   }
 
@@ -141,14 +144,14 @@ class OExchangePlugin {
    * @link http://www.oexchange.org/spec/#discovery-page
    */
   public static function html_meta_link() {
-    echo '<link rel="http://oexchange.org/spec/0.8/rel/related-target" type="application/xrd+xml" href="'.site_url("/?oexchange=xrd").'?oexchange=xrd" />'."\n";
+    echo '<link rel="http://oexchange.org/spec/0.8/rel/related-target" type="application/xrd+xml" href="'.site_url("/?oexchange=xrd").'" />'."\n";
   }
 
   /**
    * adds the yiid-items to the admin-menu
    */
   public static function add_menu_item() {
-    add_options_page('OExchange', 'OExchange', 'administrator', 'oexchange', array('OExchangePlugin', 'show_settings'));
+    add_options_page("OExchange", "OExchange", "administrator", "oexchange", array("OExchangePlugin", "show_settings"));
   }
 
   /**
