@@ -1,11 +1,13 @@
 <?php
 /*
 Plugin Name: OExchange
-Plugin URI: http://wordpress.org/extend/plugins/oexchange/
+Plugin URI: http://wordpress.org/plugins/oexchange/
 Description: Adds OExchange support to WordPress' "Press This" bookmarklet
-Version: 1.6.1
+Version: 2.0.0
 Author: Matthias Pfefferle
 Author URI: http://notizblog.org/
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 add_action( 'init', array( 'OExchangePlugin', 'init' ) );
@@ -29,6 +31,9 @@ class OExchangePlugin {
 		add_action( 'admin_menu', array( 'OExchangePlugin', 'add_menu_item' ) );
 		add_action( 'wp_head', array( 'OExchangePlugin', 'html_meta_link' ), 5 );
 		add_action( 'site_icon_image_sizes', array( 'OExchangePlugin', 'site_icon_image_sizes' ) );
+
+		add_action( 'oexchange_render_xrd', array( 'OExchangePlugin', 'render_xrd' ) );
+		add_action( 'oexchange_xrd', array( 'OExchangePlugin', 'oexchange_extend_xrd' ) );
 	}
 
 	/**
@@ -37,7 +42,7 @@ class OExchangePlugin {
 	 * @param array $vars
 	 * @return array
 	 */
-	public static function query_vars($vars) {
+	public static function query_vars( $vars ) {
 		$vars[] = 'oexchange';
 
 		return $vars;
@@ -74,36 +79,25 @@ class OExchangePlugin {
 	public static function parse_request() {
 		global $wp_query, $wp;
 
-		if ( array_key_exists( 'oexchange', $wp->query_vars ) ) {
-			if ( 'xrd' === $wp->query_vars['oexchange'] ) {
-				header( 'Content-Type: application/xrd+xml; charset=' . get_option( 'blog_charset' ), true );
-				echo OExchangePlugin::create_xrd();
-				exit;
-			}
+		if ( ! array_key_exists( 'oexchange', $wp->query_vars ) ) {
+			return;
 		}
+
+		$format = $wp->query_vars['oexchange'];
+
+		do_action( 'oexchange_render', $format );
+		do_action( "oexchange_render_{$format}" );
+
+		exit;
 	}
 
 	/**
 	 * generates the xrd file
 	 *
 	 * @link http://www.oexchange.org/spec/#discovery-targetxrd
-	 * @return string
 	 */
-	public static function create_xrd() {
-		$xrd = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-		$xrd .= '<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0' . do_action( 'oexchange_ns' ) . '">' . "\n";
-		$xrd .= '	<Subject>' . site_url( '/' ) . '</Subject>' . "\n";
-		$xrd .= '	<Property type="http://www.oexchange.org/spec/0.8/prop/vendor">' . get_bloginfo( 'name' ) . '</Property>' . "\n";
-		$xrd .= '	<Property type="http://www.oexchange.org/spec/0.8/prop/title">' . get_bloginfo( 'description' ) . '</Property>' . "\n";
-		$xrd .= '	<Property type="http://www.oexchange.org/spec/0.8/prop/name">"Press This" bookmarklet</Property>' . "\n";
-		$xrd .= '	<Property type="http://www.oexchange.org/spec/0.8/prop/prompt">Press This</Property>' . "\n";
-		$xrd .= '	<Link rel= "icon" href="' . OExchangePlugin::get_icon_url( 16 ) . '" />' . "\n";
-		$xrd .= '	<Link rel= "icon32" href="' . OExchangePlugin::get_icon_url( 32 ) . '" />' . "\n";
-		$xrd .= '	<Link rel= "http://www.oexchange.org/spec/0.8/rel/offer" href="' . admin_url( 'press-this.php' ) . '" type="text/html"/>' . "\n";
-		$xrd .= do_action( 'oexchange_xrd' );
-		$xrd .= '</XRD>';
-
-		return $xrd;
+	public static function render_xrd() {
+		load_template( dirname( __FILE__ ) . '/oexchange-xrd.php' );
 	}
 
 	/**
@@ -136,6 +130,19 @@ class OExchangePlugin {
 		return $array;
 	}
 
+
+	/**
+	 * Adds OExchange Images
+	 */
+	public static function oexchange_extend_xrd() {
+		if ( function_exists( 'get_site_icon_url' ) && get_site_icon_url() ) {
+?>
+	<Link rel= "icon" href="<?php echo get_site_icon_url( null, 16 ); ?>" />
+	<Link rel= "icon32" href="<?php echo get_site_icon_url( null, 32 ); ?>" />
+<?php
+		}
+	}
+
 	/**
 	 * generates header-link
 	 *
@@ -153,24 +160,6 @@ class OExchangePlugin {
 	}
 
 	/**
-	 * returns different sized icons
-	 *
-	 * @param string $size
-	 * @return string
-	 */
-	public static function get_icon_url($size) {
-		if ( function_exists( 'get_site_icon_url' ) ) {
-			return get_site_icon_url( null, $size );
-		}
-
-		$args = array(
-			'size' => $size,
-		);
-
-		return get_avatar_url( get_bloginfo( 'admin_email' ), $args );
-	}
-
-	/**
 	 * Add 16x16 icon
 	 *
 	 * @param  array $sizes sizes available for the site icon
@@ -178,6 +167,8 @@ class OExchangePlugin {
 	 */
 	public static function site_icon_image_sizes( $sizes ) {
 		$sizes[] = '16';
+		$sizes[] = '32';
+
 		return array_unique( $sizes );
 	}
 
@@ -202,22 +193,21 @@ class OExchangePlugin {
 					<td>Your Blogs discovery-url: <a href="<?php echo site_url( '/?oexchange=xrd' ); ?>" target="_blank"><?php echo site_url( '/?oexchange=xrd' ); ?></a></td>
 				</tr>
 
+				<?php if ( function_exists( 'get_site_icon_url' ) ) { ?>
 				<tr valign="top">
 					<th scope="row">OExchange Icon</th>
 					<td>
-						<?php if ( function_exists( 'get_site_icon_url' ) ) { ?>
 						This Plugin uses the <code>site_icon</code> feature introduced in WordPress 4.3.
-						<?php } else { ?>
-						This Plugin uses the Gravatar of the admin-email: <strong><?php bloginfo( 'admin_email' ); ?></strong> as OExchange icons.
-						Visit <a href="http://gravatar.com" target="_blank">gravatar.com</a> to customize yours.
-						<?php } ?>
 
+						<?php if ( get_site_icon_url() ) { ?>
 						<ul>
-							<li><img src="<?php echo OExchangePlugin::get_icon_url( 32 ); ?>" /> 32x32</li>
-							<li><img src="<?php echo OExchangePlugin::get_icon_url( 16 ); ?>" /> 16x16</li>
+							<li><img src="<?php site_icon_url( null, 32 ); ?>" /> 32x32</li>
+							<li><img src="<?php site_icon_url( null, 16 ); ?>" /> 16x16</li>
 						</ul>
+						<?php } ?>
 					</td>
 				</tr>
+				<?php } ?>
 			</tbody>
 		</table>
 
@@ -234,7 +224,11 @@ class OExchangePlugin {
 
 		<p>This is how the discovery file looks like:</p>
 
-		<pre><?php echo htmlentities( OExchangePlugin::create_xrd() ); ?></pre>
+		<pre><?php
+			$xrd = file_get_contents( site_url( '/?oexchange=xrd' ) );
+
+			echo htmlentities( $xrd );
+		?></pre>
 	</div>
 <?php
 	}
