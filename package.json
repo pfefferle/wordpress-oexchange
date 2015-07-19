@@ -12,7 +12,7 @@
     "plugin"
   ],
   "author": "Matthias Pfefferle",
-  "license": "GPL",
+  "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/pfefferle/wordpress-oexchange/issues"
   },
