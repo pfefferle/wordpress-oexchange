@@ -26,7 +26,7 @@ class OExchangePlugin {
 		add_action( 'parse_request', array( 'OExchangePlugin', 'parse_request' ) );
 		add_filter( 'query_vars', array( 'OExchangePlugin', 'query_vars' ) );
 		add_filter( 'host_meta', array( 'OExchangePlugin', 'host_meta_link' ) );
-		add_filter( 'webfinger', array( 'OExchangePlugin', 'webfinger_link' ) );
+		add_filter( 'webfinger_user_data', array( 'OExchangePlugin', 'webfinger_link' ) );
 		add_action( 'load-press-this.php', array( 'OExchangePlugin', 'load_press_this' ) );
 		add_action( 'admin_menu', array( 'OExchangePlugin', 'add_menu_item' ) );
 		add_action( 'wp_head', array( 'OExchangePlugin', 'html_meta_link' ), 5 );
