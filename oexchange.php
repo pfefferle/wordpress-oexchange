@@ -3,7 +3,7 @@
 Plugin Name: OExchange
 Plugin URI: http://wordpress.org/plugins/oexchange/
 Description: Adds OExchange support to WordPress' "Press This" bookmarklet
-Version: 2.0.0
+Version: 2.0.1
 Author: Matthias Pfefferle
 Author URI: http://notizblog.org/
 License: GPLv2 or later
@@ -30,7 +30,7 @@ class OExchangePlugin {
 		add_action( 'load-press-this.php', array( 'OExchangePlugin', 'load_press_this' ) );
 		add_action( 'admin_menu', array( 'OExchangePlugin', 'add_menu_item' ) );
 		add_action( 'wp_head', array( 'OExchangePlugin', 'html_meta_link' ), 5 );
-		add_action( 'site_icon_image_sizes', array( 'OExchangePlugin', 'site_icon_image_sizes' ) );
+		add_filter( 'site_icon_image_sizes', array( 'OExchangePlugin', 'site_icon_image_sizes' ) );
 
 		add_action( 'oexchange_render_xrd', array( 'OExchangePlugin', 'render_xrd' ) );
 		add_action( 'oexchange_xrd', array( 'OExchangePlugin', 'oexchange_extend_xrd' ) );
@@ -135,10 +135,10 @@ class OExchangePlugin {
 	 * Adds OExchange Images
 	 */
 	public static function oexchange_extend_xrd() {
-		if ( function_exists( 'get_site_icon_url' ) && get_site_icon_url() ) {
+		if ( function_exists( 'get_site_icon_url' ) && has_site_icon() ) {
 ?>
-	<Link rel= "icon" href="<?php echo get_site_icon_url( null, 16 ); ?>" />
-	<Link rel= "icon32" href="<?php echo get_site_icon_url( null, 32 ); ?>" />
+	<Link rel= "icon" href="<?php echo get_site_icon_url( 16 ); ?>" />
+	<Link rel= "icon32" href="<?php echo get_site_icon_url( 32 ); ?>" />
 <?php
 		}
 	}
@@ -201,8 +201,8 @@ class OExchangePlugin {
 
 						<?php if ( get_site_icon_url() ) { ?>
 						<ul>
-							<li><img src="<?php site_icon_url( null, 32 ); ?>" /> 32x32</li>
-							<li><img src="<?php site_icon_url( null, 16 ); ?>" /> 16x16</li>
+							<li><img src="<?php site_icon_url( 32 ); ?>" /> 32x32</li>
+							<li><img src="<?php site_icon_url( 16 ); ?>" /> 16x16</li>
 						</ul>
 						<?php } ?>
 					</td>
