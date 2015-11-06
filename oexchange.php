@@ -1,14 +1,14 @@
 <?php
-/*
-Plugin Name: OExchange
-Plugin URI: http://wordpress.org/plugins/oexchange/
-Description: Adds OExchange support to WordPress' "Press This" bookmarklet
-Version: 2.0.1
-Author: Matthias Pfefferle
-Author URI: http://notizblog.org/
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
-*/
+/**
+ * Plugin Name: OExchange
+ * Plugin URI: http://wordpress.org/plugins/oexchange/
+ * Description: Adds OExchange support to WordPress' "Press This" bookmarklet
+ * Version: 2.0.1
+ * Author: Matthias Pfefferle
+ * Author URI: http://notizblog.org/
+ * License: GPLv2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 add_action( 'init', array( 'OExchangePlugin', 'init' ) );
 
@@ -137,8 +137,8 @@ class OExchangePlugin {
 	public static function oexchange_extend_xrd() {
 		if ( function_exists( 'get_site_icon_url' ) && has_site_icon() ) {
 ?>
-	<Link rel= "icon" href="<?php echo get_site_icon_url( 16 ); ?>" />
-	<Link rel= "icon32" href="<?php echo get_site_icon_url( 32 ); ?>" />
+	<Link rel="icon" href="<?php echo get_site_icon_url( 16 ); ?>" />
+	<Link rel="icon32" href="<?php echo get_site_icon_url( 32 ); ?>" />
 <?php
 		}
 	}
@@ -149,7 +149,7 @@ class OExchangePlugin {
 	 * @link http://www.oexchange.org/spec/#discovery-page
 	 */
 	public static function html_meta_link() {
-		echo '<link rel="http://oexchange.org/spec/0.8/rel/related-target" type="application/xrd+xml" href="' . site_url( '/?oexchange=xrd' ) . '" />' . "\n";
+		echo '<link rel="http://oexchange.org/spec/0.8/rel/related-target" type="application/xrd+xml" href="' . site_url( '/?oexchange=xrd' ) . '" />' . PHP_EOL;
 	}
 
 	/**
@@ -176,7 +176,7 @@ class OExchangePlugin {
 	 * displays the yiid settings page
 	 */
 	public static function show_settings() {
-?>
+	?>
 	<div class="wrap">
 		<h2>OExchange</h2>
 
@@ -230,6 +230,6 @@ class OExchangePlugin {
 			echo htmlentities( $xrd );
 		?></pre>
 	</div>
-<?php
+	<?php
 	}
 }
