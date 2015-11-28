@@ -3,7 +3,7 @@ Contributors: pfefferle
 Donate link: http://14101978.de
 Tags: OExchange, share, exchange, like, bookmarklet, press-this
 Requires at least: 2.7
-Tested up to: 4.3
+Tested up to: 4.4
 Stable tag: 2.0.2
 
 Adds OExchange and Web Intents support to WordPress
