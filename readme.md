@@ -6,7 +6,7 @@
 **Tags:** OExchange, share, exchange, like, bookmarklet, press-this  
 **Requires at least:** 2.7  
 **Tested up to:** 4.3  
-**Stable tag:** 2.0.1  
+**Stable tag:** 2.0.2  
 
 Adds OExchange and Web Intents support to WordPress
 
@@ -24,6 +24,9 @@ From the website:
 > This'll help you get up and running, whether you're a service that can accept content, a site  that has content to share, or a tool of some sort. Remember that OExchange isn't limited to "sharing" things; it applies to any case where one service wants to send URL-based content to another -- microblogging, translating, printing, whatever.
 
 ## Changelog ##
+
+### 2.0.2 ###
+* fixed site icon support
 
 ### 2.0.1 ###
 * fixed site icon support
