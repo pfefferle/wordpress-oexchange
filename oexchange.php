@@ -3,7 +3,7 @@
  * Plugin Name: OExchange
  * Plugin URI: http://wordpress.org/plugins/oexchange/
  * Description: Adds OExchange support to WordPress' "Press This" bookmarklet
- * Version: 2.0.2
+ * Version: 2.0.3
  * Author: Matthias Pfefferle
  * Author URI: http://notizblog.org/
  * License: GPLv2 or later
@@ -97,6 +97,8 @@ class OExchangePlugin {
 	 * @link http://www.oexchange.org/spec/#discovery-targetxrd
 	 */
 	public static function render_xrd() {
+		header( 'Content-Type: application/xrd+xml; charset=' . get_option( 'blog_charset' ), true );
+
 		load_template( dirname( __FILE__ ) . '/oexchange-xrd.php' );
 	}
 
@@ -176,6 +178,9 @@ class OExchangePlugin {
 	 * displays the yiid settings page
 	 */
 	public static function show_settings() {
+		ob_start();
+		load_template( dirname( __FILE__ ) . '/oexchange-xrd.php' );
+		$xrd = ob_get_clean();
 	?>
 	<div class="wrap">
 		<h2>OExchange</h2>
@@ -224,11 +229,7 @@ class OExchangePlugin {
 
 		<p>This is how the discovery file looks like:</p>
 
-		<pre><?php
-			$xrd = file_get_contents( site_url( '/?oexchange=xrd' ) );
-
-			echo htmlentities( $xrd );
-		?></pre>
+		<pre><?php echo wp_specialchars( $xrd ); ?></pre>
 	</div>
 	<?php
 	}

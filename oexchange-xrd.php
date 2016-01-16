@@ -1,8 +1,4 @@
-<?php
-header( 'Content-Type: application/xrd+xml; charset=' . get_option( 'blog_charset' ), true );
-echo '<?xml version="1.0" encoding="UTF-8"?>';
-?>
-
+<?php echo '<?xml version="1.0" encoding="UTF-8"?>'; ?>
 <XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0<?php do_action( 'oexchange_ns' ); ?>">
 	<Subject><?php echo site_url( '/' ); ?></Subject>
 	<Property type="http://www.oexchange.org/spec/0.8/prop/vendor"><?php bloginfo( 'name' ); ?></Property>
