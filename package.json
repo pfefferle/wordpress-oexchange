@@ -1,6 +1,5 @@
 {
   "name": "OExchange",
-  "version": "2.0.3",
   "description": "OExchange support for the \"Press This\" bookmarklet",
   "repository": {
     "type": "git",
@@ -12,7 +11,7 @@
     "plugin"
   ],
   "author": "Matthias Pfefferle",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/pfefferle/wordpress-oexchange/issues"
   },

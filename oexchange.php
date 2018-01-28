@@ -3,11 +3,11 @@
  * Plugin Name: OExchange
  * Plugin URI: http://wordpress.org/plugins/oexchange/
  * Description: Adds OExchange support to WordPress' "Press This" bookmarklet
- * Version: 2.0.3
+ * Version: 2.0.4
  * Author: Matthias Pfefferle
- * Author URI: http://notizblog.org/
- * License: GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * Author URI: https://notiz.blog/
+ * License: MIT
+ * License URI: https://opensource.org/licenses/MIT
  */
 
 add_action( 'init', array( 'OExchangePlugin', 'init' ) );

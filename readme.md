@@ -2,11 +2,11 @@
 
 # OExchange #
 **Contributors:** pfefferle  
-**Donate link:** http://14101978.de  
+**Donate link:** https://notiz.blog/donate/  
 **Tags:** OExchange, share, exchange, like, bookmarklet, press-this  
 **Requires at least:** 2.7  
-**Tested up to:** 4.6.1  
-**Stable tag:** 2.0.3  
+**Tested up to:** 4.9.2  
+**Stable tag:** 2.0.4  
 
 Adds OExchange and Web Intents support to WordPress
 
@@ -16,14 +16,19 @@ Adds OExchange and Web Intents support to WordPress' "Press This" bookmarklet (h
 
 Supported Plugins:
 
-* the webfinger-plugin: http://wordpress.org/extend/plugins/webfinger/
-* the host-meta-plugin: http://wordpress.org/extend/plugins/host-meta/
+* the webfinger-plugin: <https://wordpress.org/plugins/webfinger/>
+* the host-meta-plugin: <https://wordpress.org/plugins/host-meta/>
 
 From the website:
 
 > This'll help you get up and running, whether you're a service that can accept content, a site  that has content to share, or a tool of some sort. Remember that OExchange isn't limited to "sharing" things; it applies to any case where one service wants to send URL-based content to another -- microblogging, translating, printing, whatever.
 
 ## Changelog ##
+
+### 2.0.4 ###
+* changed license to MIT
+* some small fixes
+* updated dependencies
 
 ### 2.0.3 ###
 * some small fixes
